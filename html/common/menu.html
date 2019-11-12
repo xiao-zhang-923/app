@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .personSetting .el-table__body {
+            border-top: 1px solid #EBEEF5;
+        }
+        .personSetting .el-form-item__content{
+            line-height: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="header">
+            <div class="top">
+                <div class="fun_btn">
+                    <span><i class="el-icon-user"></i>您好，维护管理员(顺义区服务中心)</span>
+                    <span><i class="el-icon-s-tools"></i>设计</span>
+                    <span @click='setting'><i class="el-icon-setting"></i>设置</span>
+                    <span @click='signOut'><i class="el-icon-switch-button"></i>退出</span>
+                </div>
+            </div>
+            <el-menu :default-active="activeIndex" class="el-menu-demo" mode='horizontal' @select='handleSelect'
+                background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" style="height: 40px;">
+                <el-menu-item index='1'>接件受理</el-menu-item>
+                <el-menu-item index='2'>通用审批</el-menu-item>
+                <el-menu-item index='3'>协同审批</el-menu-item>
+                <el-menu-item index='4'>收费管理</el-menu-item>
+                <el-menu-item index='5'>业务咨询</el-menu-item>
+                <el-menu-item index='6'>辅助功能</el-menu-item>
+                <el-menu-item index='7'>查询统计</el-menu-item>
+                <el-menu-item index='8'>电子档案查询</el-menu-item>
+                <el-menu-item index='9'>企业信息查询</el-menu-item>
+                <el-menu-item index='10'>社会组织查询</el-menu-item>
+                <el-menu-item index='11'>事业单位查询</el-menu-item>
+            </el-menu>
+        </div>
+        <div id="leftColumn">
+            <el-menu class="el-menu-demo" mode='vertical' background-color="#545c64" text-color="#fff"
+                active-text-color="#ffd04b" style="height: 100%;overflow:-Scroll;overflow-x:hidden"
+                :default-active="leftColumnActiveIndex" @select='leftColumnSelect'>
+                <div v-for='(item,index) in leftColumn'>
+                    <el-submenu :index="item.key" v-if='item.subs && item.subs.length > 0'>
+                        <template slot="title">
+                            <span slot="title">{{item.title}}</span>
+                        </template>
+                        <el-submenu v-for='(its,idx) in item.subs' :index='its.key'
+                            v-if='its.childrenSubs && its.childrenSubs.length>0'>
+                            <template slot="title">
+                                <span slot="title">{{its.title}}</span>
+                            </template>
+                            <el-menu-item-group v-for='(items,indexs) in its.childrenSubs'>
+                                <el-menu-item :class='items.index==leftColumnActiveIndex?"is-active":""' key='items.key'
+                                    :index='items.index' @click='router(items.key,items.index)'>{{items.title}}
+                                </el-menu-item>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-menu-item v-else :index='its.index' :class='its.index==leftColumnActiveIndex?"is-active":""'
+                            @click='router(its.key,its.index)'>{{its.title}}</el-menu-item>
+                    </el-submenu>
+                    <el-menu-item v-else :index='item.index' @click='router(item.key,item.index)'>{{item.title}}
+                    </el-menu-item>
+                </div>
+            </el-menu>
+        </div>
+        <div class="personSetting" v-if='settingFlag'>
+            <div class="setting">
+                <div class="settingTop">
+                    <span>个人设置</span>
+                    <i class='el-icon-close' @click='closeSetting'></i>
+                </div>
+                <template>
+                    <el-tabs class="tabsPane" v-model="activeName" type="card" @tab-click="handleClick">
+                        <el-tab-pane label="个人信息" name="first">
+                            <el-form ref="personInfoForm" :inline='true' :model="personInfoForm" label-width="80px"
+                                class="demo-form-inline">
+                                <el-form-item style="float: right;width: 200px;margin-right: 20px;">
+                                    <el-upload class="avatar-uploader"
+                                        action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false"
+                                        :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                                        <img v-if="personInfoForm.imageUrl" :src="personInfoForm.imageUrl"
+                                            class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                </el-form-item>
+                                <div style="width:600px;">
+                                    <el-form-item label="用户账号">
+                                        <el-input v-model="personInfoForm.accountNumber" disabled></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="用户编号">
+                                        <el-input v-model="personInfoForm.number" disabled></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="姓名">
+                                        <el-input v-model="personInfoForm.name" disabled></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="性别">
+                                        <el-radio-group v-model="personInfoForm.sex">
+                                            <el-radio :label="1">男</el-radio>
+                                            <el-radio :label="2">女</el-radio>
+                                        </el-radio-group>
+                                    </el-form-item>
+                                    <el-form-item label="所在部门">
+                                        <el-input v-model="personInfoForm.department" disabled></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="职务">
+                                        <el-input v-model="personInfoForm.post" disabled></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="手机">
+                                        <el-input v-model="personInfoForm.phone"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="电子邮件" prop="email" label="邮箱" :rules="[
+                                  { required: false, message: '请输入邮箱地址', trigger: 'blur' },
+                                  { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur'] }
+                                ]">
+                                        <el-input v-model="personInfoForm.email"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="工作电话">
+                                        <el-input v-model="personInfoForm.workPhone"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="家庭电话">
+                                        <el-input v-model="personInfoForm.homePhone"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="备注">
+                                        <el-input type="textarea" v-model="personInfoForm.remark" style="width:510px;"
+                                            rows='3'></el-input>
+                                    </el-form-item>
+                                    <el-form-item style="display: block;text-align: center;">
+                                        <el-button type="primary" @click="onSubmit">保存</el-button>
+                                    </el-form-item>
+                                </div>
+                            </el-form>
+                        </el-tab-pane>
+                        <el-tab-pane label="修改密码" name="second">
+                            <el-form :label-position='"right"' ref='passwordForm' :model='passwordForm'
+                                label-width="100px">
+                                <el-form-item label='原密码:'>
+                                    <el-input type='password' show-password v-model='passwordForm.password'
+                                        style="width:300px"></el-input>
+                                </el-form-item>
+                                <el-form-item label='新密码:'>
+                                    <el-input type='password' show-password v-model='passwordForm.newPassword'
+                                        style="width:300px"></el-input>
+                                </el-form-item>
+                                <el-form-item label='确认新密码:'>
+                                    <el-input type='password' show-password v-model='passwordForm.confirmNewPassword'
+                                        style="width:300px"></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type='primary'>确认</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-tab-pane>
+                        <el-tab-pane label="常用模板" name="third">
+                            <el-form ref="templateForm" :model="templateForm" label-width="80px" style="width: 90%;">
+                                <el-form-item>
+                                    <div class="table">
+                                        <template>
+                                            <el-table :data="templateForm.TemplateTableData"
+                                                style="width: 100%;margin: 0 auto;" border size='mini'>
+                                                <el-table-column prop="index" label="序号" width="180">
+                                                </el-table-column>
+                                                <el-table-column prop="name" label="名称">
+                                                </el-table-column>
+                                            </el-table>
+                                        </template>
+                                    </div>
+                                </el-form-item>
+                                <el-form-item label='模板名称'>
+                                    <el-input v-model='templateForm.name'></el-input>
+                                </el-form-item>
+                                <el-form-item label='模板正文'>
+                                    <el-input type="textarea" v-model="templateForm.doc" style="width:100%;" rows='3'>
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label='类型'>
+                                    <el-radio-group v-model="templateForm.type">
+                                        <el-radio :label="1">私有</el-radio>
+                                        <el-radio :label="2">公有</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type='primary'>新增</el-button>
+                                    <el-button type='primary'>保存</el-button>
+                                    <el-button type='primary'>删除</el-button>
+                                </el-form-item>
+                            </el-form>
+
+                        </el-tab-pane>
+                    </el-tabs>
+                </template>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            menus: [
+                {
+                    title: '接件受理',
+                    key: '/home',
+                    subs: [
+                        {
+                            key: 'homeReceipt.html', title: '收件', icon: '', childrenSubs: [
+                                { key: "/html/jjsl/jjsl/sj/homeReceiptWindow.html", title: "窗口收件", icon: "", index: "1" },
+                                { key: "/html/jjsl/jjsl/sj/homeReceiptOnlineWeChat.html", title: "网上&微信收件", icon: "", index: "2" },
+                                { key: "/html/jjsl/jjsl/sj/homeReceiptApproval.html", title: "联合审批", icon: "", index: "3" },
+                                { key: "/html/jjsl/jjsl/sj/homeReceiptReportPieces.html", title: "上报件", icon: "", index: "4" },
+                            ]
+                        },
+                        {
+                            key: '/home/waitAcceptance', title: '待受理件', icon: '', childrenSubs: [
+                                { key: "/html/jjsl/jjsl/dslj/homeWaitAcceptanceWindow.html", title: "窗口待受理件", icon: "", index: "5" },
+                                { key: "/html/jjsl/jjsl/dslj/HomeWaitAcceptanceStuff.html", title: "材料待审核", icon: "", index: "6" },
+                            ]
+                        },
+                        { key: '/html/jjsl/jjsl/homeDraft.html', title: '草稿', icon: '', index: "7" },
+                        { key: '/html/jjsl/jjsl/homeCorrection.html', title: '补正', icon: '', index: "8" },
+                        { key: '/html/jjsl/jjsl/homeRefuseToAccept.html', title: '不予受理', icon: '', index: "9" },
+                        { key: '/html/jjsl/jjsl/homeComprehensiveAcceptance.html', title: '综合窗口待受理件', icon: '', index: "10" },
+
+                    ]
+                },
+                {
+                    title: '网上&微信预审',
+                    key: '/onlineWeChat',
+                    subs: [
+                        { key: '/html/jjsl/wswxys/homeOnlineWeChatPendingTrial.html', title: '待预审', icon: '', index: "11" },
+                        { key: '/html/jjsl/wswxys/homeOnlineWeChatPretrial.html', title: '已预审', icon: '', index: "12" },
+                    ]
+                },
+                {
+                    title: '批量受理',
+                    key: '/html/jjsl/batchAcceptance.html',
+                    index: "13"
+                },
+            ],
+            menus1: [
+                {
+                    title: '办件审批',
+                    key: '/runPiece',
+                    subs: [
+                        {
+                            key: '/runPiece/dealtWith', title: '待办', icon: '', childrenSubs: [
+                                { key: "/html/tysp/bjsp/db/runPieceDealtWithExamination.html", title: "审查", icon: "", index: "1" },
+                                { key: "/html/tysp/bjsp/db/runPieceDealtWithSpecialProduce.html", title: "特别程序", icon: "", index: "2" },
+                                { key: "/html/tysp/bjsp/db/runPieceDealtWithReport.html", title: "上报", icon: "", index: "3" },
+                            ]
+                        },
+                        {
+                            key: '/runPiece/alreadyDone', title: '已办', icon: '', childrenSubs: [
+                                { key: "/html/tysp/bjsp/yb/runPieceAlreadyDoneInHanding.html", title: "办理中", icon: "", index: "4" },
+                                { key: "/html/tysp/bjsp/yb/runPieceAlreadyDoneCompleted.html", title: "已办结", icon: "", index: "5" },
+                                { key: "/html/tysp/bjsp/yb/runPieceAlreadyDoneRetired.html", title: "已退废", icon: "", index: "6" },
+                            ]
+                        },
+                        {
+                            key: '/runPiece/refund', title: '退件', icon: '', childrenSubs: [
+                                { key: "/html/tysp/bjsp/tj/runPieceRefundDraft.html", title: "草稿", icon: "", index: "7" },
+                                { key: "/html/tysp/bjsp/tj/runPieceRefundDealtWith.html", title: "待办", icon: "", index: "8" },
+                                { key: "/html/tysp/bjsp/tj/runPieceRefundAlreadyDone.html", title: "已办", icon: "", index: "9" },
+                                { key: "/html/tysp/bjsp/tj/runPieceRefundApply.html", title: "我的申请", icon: "", index: "10" },
+                            ]
+                        },
+                        {
+                            key: '/runPiece/scrap', title: '废件', icon: '', childrenSubs: [
+                                { key: "/html/tysp/bjsp/fj/runPieceScrapDraft.html", title: "草稿", icon: "", index: "11" },
+                                { key: "/html/tysp/bjsp/fj/runPieceScrapDealtWith.html", title: "待办", icon: "", index: "12" },
+                                { key: "/html/tysp/bjsp/fj/runPieceScrapAlreadyDone.html", title: "已办", icon: "", index: "13" },
+                                { key: "/html/tysp/bjsp/fj/runPieceScrapApply.html", title: "我的申请", icon: "", index: "14" },
+                            ]
+                        },
+                        {
+                            key: '/runPiece/delay', title: '延期', icon: '', childrenSubs: [
+                                { key: "/html/tysp/bjsp/yq/runPieceDelayDraft.html", title: "草稿", icon: "", index: "15" },
+                                { key: "/html/tysp/bjsp/yq/runPieceDelayDealtWith.html", title: "待办", icon: "", index: "16" },
+                                { key: "/html/tysp/bjsp/yq/runPieceDelayAlreadyDone.html", title: "已办", icon: "", index: "17" },
+                                { key: "/html/tysp/bjsp/yq/runPieceDelayApply.html", title: "我的申请", icon: "", index: "18" },
+                            ]
+                        },
+                    ]
+                },
+                {
+                    title: '发证管理',
+                    key: '/management',
+                    subs: [
+                        { key: '/html/tysp/fzgl/managementUncollected.html', title: '未领取', icon: '', index: "19" },
+                        {
+                            key: '/management/haveReceived', title: '已领取', icon: '', childrenSubs: [
+                                { key: "/html/tysp/fzgl/ylq/managementHaveReceivedElectronic.html", title: "电子证照", icon: "", index: "20" },
+                                { key: "/html/tysp/fzgl/ylq/managementHaveReceivedPaper.html", title: "纸质证照", icon: "", index: "21" },
+                            ]
+                        },
+                        { key: '/html/tysp/fzgl/managementPrinting.html', title: '证照打印', icon: '', index: "22" },
+                    ]
+                },
+                {
+                    title: '部门办件',
+                    key: '/html/tysp/departmental.html',
+                    index: "23"
+                },
+                {
+                    title: '督察督办',
+                    key: '/html/tysp/supervise.html',
+                    index: "24"
+                },
+                {
+                    title: '商务部数据',
+                    key: '/html/tysp/boardOfTrade.html',
+                    index: "25"
+                },
+            ],
+            menus2: [
+                {
+                    title: '联办辅导',
+                    key: '/coach',
+                    subs: [
+                        { key: '/html/xtsp/lbfd/coachDraft.html', title: '草稿', icon: '', index: "1" },
+                        { key: '/html/xtsp/lbfd/coachDealtWith.html', title: '待办', icon: '', index: '2' },
+                        { key: '/html/xtsp/lbfd/coachAlreadyDone.html', title: '已办', icon: '', index: "3" },
+                        { key: '/html/xtsp/lbfd/coachApply.html', title: '我的申请', icon: '', index: "4" },
+                    ]
+                },
+                {
+                    title: '联办项目',
+                    key: '/project',
+                    subs: [
+                        { key: '/html/xtsp/lbxm/projectDraft.html', title: '草稿', icon: '', index: "5" },
+                        { key: '/html/xtsp/lbxm/projectHaveInHand.html', title: '进行中', icon: '', index: "6" },
+                        { key: '/html/xtsp/lbxm/projectHasEnded.html', title: '已结束', icon: '', index: "7" },
+                    ]
+                },
+            ],
+            menus3: [
+                {
+                    title: '项目设置',
+                    key: '/html/sfgl/projectSettings.html',
+                    index: "1"
+                },
+                {
+                    title: '银行设置',
+                    key: '/html/sfgl/bankSetup.html',
+                    index: "2"
+                },
+            ],
+            menus4: [
+                {
+                    title: '咨询管理',
+                    key: '/consultation',
+                    subs: [
+                        { key: "/html/ywzx/zxgl/consultationUnanswered.html", title: "未答复", icon: "", index: "1" },
+                        { key: "/html/ywzx/zxgl/consultationReply.html", title: "已答复", icon: "", index: "2" },
+                        { key: "/html/ywzx/zxgl/consultationPublicNotice.html", title: "已公示", icon: "", index: "3" },
+                        { key: "/html/ywzx/zxgl/consultationParcelReceived.html", title: "转办来件", icon: "", index: "4" },
+                        { key: "/html/ywzx/zxgl/consultationScrapList.html", title: "废件列表", icon: "", index: "5" },
+                        { key: "/html/ywzx/zxgl/consultationDraft.html", title: "草稿", icon: "", index: "6" },
+                    ]
+                },
+                {
+                    title: '知识库',
+                    key: '/knowledgeBase',
+                    subs: [
+                        { key: "/html/ywzx/zsk/knowledgeBaseMaintain.html", title: "知识库维护", icon: "", index: "7" },
+                        { key: "/html/ywzx/zsk/knowledgeBaseQuery.html", title: "知识库查询", icon: "", index: "8" },
+                        { key: "/html/ywzx/zsk/knowledgeBaseRecycleBin.html", title: "回收站", icon: "", index: "9" },
+                    ]
+                },
+            ],
+            menus5: [
+                {
+                    title: '事项维护',
+                    key: '/itemMaintenance',
+                    subs: [
+                        { key: "/html/fzgn/sxwh/itemMaintenanceMajorItem.html", title: "大项", icon: "", index: "1" },
+                        { key: "/html/fzgn/sxwh/itemMaintenanceSubitem.html", title: "子项", icon: "", index: "2" },
+                        { key: "/html/fzgn/sxwh/itemMaintenanceRecycleBin.html", title: "回收站", icon: "", index: "3" },
+                    ]
+                },
+                {
+                    title: "办件量填报",
+                    key: "/html/fzgn/fillIn.html",
+                    index: "4"
+                },
+                {
+                    title: "授权委托",
+                    key: "/authorizedDelegation",
+                    subs: [
+                        { key: "/html/fzgn/sqwt/authorizedDelegationWorkDelegate.html", title: "工作委托", icon: "", index: "5" }
+                    ]
+                },
+                {
+                    title: "预约管理",
+                    key: "/booking",
+                    subs: [
+                        { key: "/html/fzgn/yygl/bookingUntreated.html", title: "未处理", icon: "", index: "6" },
+                        { key: "/html/fzgn/yygl/bookingProcessed.html", title: "已处理", icon: "", index: "7" },
+                        { key: "/html/fzgn/yygl/bookingHistorical.html", title: "历史预约", icon: "", index: "8" },
+                    ]
+                },
+                {
+                    title: "窗口管理",
+                    key: "/html/fzgn/windowManagement.html",
+                    index: "9"
+                },
+                {
+                    title: "投诉调查",
+                    key: "/html/fzgn/complaint.html",
+                    index: "10"
+                },
+                {
+                    title: "通讯录",
+                    key: "/html/fzgn/mailList.html",
+                    index: "11"
+                },
+                {
+                    title: "叫号取号",
+                    key: "/callNumber",
+                    subs: [
+                        { key: "/html/fzgn/jhqh/callNumberReceivedNumber.html", title: "已取号", icon: "", index: "12" },
+                        { key: "/html/fzgn/jhqh/callNumberAlreadyCalled.html", title: "已叫号", icon: "", index: "13" },
+                        { key: "/html/fzgn/jhqh/callNumberNoCall.html", title: "未叫号", icon: "", index: "14" },
+                    ]
+                },
+            ],
+            menus6: [
+                {
+                    title: "办件统计",
+                    key: "/statisticalAnalysis",
+                    subs: [
+                        { key: "/html/cxtj/bjtj/statisticalAnalysisHandlingQuantity.html", title: "办件量统计", icon: "", index: "1" },
+                        { key: "/html/cxtj/bjtj/statisticalAnalysisSource.html", title: "系统办件量", icon: "", index: "2" },
+                        { key: "/html/cxtj/bjtj/statisticalAnalysisType.html", title: "办件类型统计", icon: "", index: "3" },
+                    ]
+                },
+                {
+                    title: "综合统计",
+                    key: "/comprehensiveStatistics",
+                    subs: [
+                        { key: "/html/cxtj/zhtj/comprehensiveStatisticsEvaluate.html", title: "评价统计", icon: "", index: "4" },
+                        { key: "/html/cxtj/zhtj/comprehensiveStatisticsConsultation.html", title: "咨询统计", icon: "", index: "5" },
+                        { key: "/html/cxtj/zhtj/comprehensiveStatisticsComplaint.html", title: "投诉统计", icon: "", index: "6" },
+                        { key: "/html/cxtj/zhtj/comprehensiveStatisticsSubscribe.html", title: "预约统计", icon: "", index: "7" },
+                    ]
+                },
+                {
+                    title: "综合查询",
+                    key: "/comprehensiveQuery",
+                    subs: [
+                        { key: "/html/cxtj/zhcx/comprehensiveQuerySearchForParts.html", title: "投诉查询", icon: "", index: "8" },
+                        { key: "/html/cxtj/zhcx/comprehensiveQueryEvaluationQuery.html", title: "评价查询", icon: "", index: "9" },
+                        { key: "/html/cxtj/zhcx/comprehensiveQueryReservationInquiry.html", title: "预约查询", icon: "", index: "10" },
+                        { key: "/html/cxtj/zhcx/comprehensiveQueryEnquiryAndEnquiry.html", title: "咨询查询", icon: "", index: "11" },
+                    ]
+                },
+            ],
+            leftColumn: [],
+            activeIndex: "",
+            leftColumnActiveIndex: "1",
+            settingFlag: false,
+            activeName: "first",
+            personInfoForm: {
+                accountNumber: 'admin',
+                number: "1",
+                name: "维护管理员",
+                sex: 1,
+                department: "顺义区政务中心",
+                post: "",
+                phone: "",
+                email: "",
+                workPhone: "",
+                homePhone: "",
+                remark: "",
+                imageUrl: ""
+            },
+            passwordForm: {
+                password: "",
+                newPassword: "",
+                confirmNewPassword: ""
+            },
+            templateForm: {
+                TemplateTableData: [],
+                name: "",
+                doc: "",
+                type: 1
+            }
+        },
+        created() {
+            this.store()
+        },
+        methods: {
+            store() {
+                this.activeIndex = localStorage.getItem("sy_activeIndex") ? localStorage.getItem("sy_activeIndex") : "1",
+                    this.leftColumnActiveIndex = localStorage.getItem("sy_leftColumnActiveIndex") ? localStorage.getItem("sy_leftColumnActiveIndex") : "1"
+                this.handleSelect(this.activeIndex)
+            },
+            setStore() {
+                localStorage = window.localStorage;
+                localStorage.setItem("sy_activeIndex", this.activeIndex)
+                localStorage.setItem("sy_leftColumnActiveIndex", this.leftColumnActiveIndex)
+            },
+            handleSelect(key) {
+                switch (key) {
+                    case "1":
+                        this.leftColumn = this.menus;
+                        break;
+                    case "2":
+                        this.leftColumn = this.menus1;
+                        break;
+                    case "3":
+                        this.leftColumn = this.menus2;
+                        break;
+                    case "4":
+                        this.leftColumn = this.menus3;
+                        break;
+                    case "5":
+                        this.leftColumn = this.menus4;
+                        break;
+                    case "6":
+                        this.leftColumn = this.menus5;
+                        break;
+                    case "7":
+                        this.leftColumn = this.menus6;
+                        break;
+                    default:
+                        this.leftColumn = [];
+                }
+                this.activeIndex = key;
+                this.setStore()
+            },
+            leftColumnSelect(key) {
+            },
+            router(e, key) {
+                window.location.href = e;
+                this.leftColumnActiveIndex = key;
+                this.setStore();
+            },
+            signOut() {
+                window.location.href = '/html/login.html'
+            },
+            setting() {
+                this.activeName = 'first'
+                this.settingFlag = true
+            },
+            handleClick(e) {
+                this.activeName = e.name
+            },
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg' || 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+            handleAvatarSuccess(res, file) {
+                this.personInfoForm.imageUrl = URL.createObjectURL(file.raw);
+            },
+            onSubmit() {
+
+            },
+            closeSetting(){
+                this.settingFlag= false;
+            }
+        }
+    })
+</script>
+
+</html>

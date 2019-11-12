@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- 引入组件库 -->
+    <link rel="stylesheet" href="/css/element.css">
+    <!-- 引入组件库 -->
+    <link rel="stylesheet" href="/css/common.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/common/vue.js"></script>
+    <script src="/common/element.js"></script>
+    <title>接件</title>
+    <style>
+        form span {
+            margin: 10px 15px;
+        }
+
+        .info—left {
+            width: calc(100vw - 500px);
+            float: left;
+        }
+
+        .el-form--label-right {
+            border-right: 1px dashed #ccc;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .info—right {
+            width: 200px;
+            float: left;
+        }
+
+        .el-form-item {
+            margin: 0;
+            border: 1px dashed #ccc;
+            border-bottom: 0;
+            border-right: 0
+        }
+
+        .el-form-item__label {
+            border-right: 1px dashed #ccc;
+        }
+
+        .el-input__inner {
+            border: 0;
+        }
+        .my_table thead{
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div id="commonMenu"></div>
+        <div id="doc">
+            <div class="substance">
+                <div class="header" style="overflow: hidden;">
+                    <el-breadcrumb class="el-icon-arrow-right" style="position: relative;top: 10px;">
+                        <el-breadcrumb-item>事项审批</el-breadcrumb-item>
+                        <el-breadcrumb-item>审批单信息</el-breadcrumb-item>
+                    </el-breadcrumb>
+                    <el-row style="float: right;">
+                        <el-button type="primary">催办</el-button>
+                        <el-button type="primary">督办</el-button>
+                        <el-button type="primary">关闭</el-button>
+                    </el-row>
+                </div>
+                <div class="form" style="text-align: center;">
+                    <h3>政府投资项目建议书审批</h3>
+                    <p><span>申请时间：2014-03-21</span><span>申请数量</span><span>办件编号：23123124312</span></p>
+                </div>
+                <div class="info" style="overflow: hidden;">
+                    <div class="info—left">
+                        <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" :label-position="labelPosition"
+                            label-width="80px">
+                            <el-form-item prop="company" label="申请单位">
+                                <el-input v-model="dynamicValidateForm.company" readonly></el-input>
+                            </el-form-item>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item prop="company" label="证件类型">
+                                        <el-input v-model="dynamicValidateForm.type" readonly></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item prop="company" label="证件号码">
+                                        <el-input v-model="dynamicValidateForm.number" readonly></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item prop="company" label="联系人">
+                                        <el-input v-model="dynamicValidateForm.contacts" readonly></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item prop="company" label="固定电话">
+                                        <el-input v-model="dynamicValidateForm.phone" readonly></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item prop="company" label="移动电话">
+                                        <el-input v-model="dynamicValidateForm.tel" readonly></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item prop="company" label="邮编">
+                                        <el-input v-model="dynamicValidateForm.email" readonly></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-form-item prop="company" label="通讯地址">
+                                <el-input v-model="dynamicValidateForm.address" readonly></el-input>
+                            </el-form-item>
+                        </el-form>
+                        <div>
+                            <h3
+                                style="width: 100%;text-align: center;background:skyblue;height: 40px;line-height: 40px;">
+                                申请材料</h3>
+                            <el-table :data='tableData1' border>
+                                <el-table-column prop='index' label='序号'></el-table-column>
+                                <el-table-column prop='name' label='材料名称' width='800'></el-table-column>
+                                <el-table-column prop='status' label='状态'></el-table-column>
+                            </el-table>
+                        </div>
+                        <div>
+                            <h3
+                                style="width: 100%;text-align: center;background:skyblue;height: 40px;line-height: 40px;">
+                                审批意见</h3>
+                            <el-table border :data="tableData3" :span-method="objectSpanMethod" class="my_table">
+                                >
+                                <el-table-column width="180" label='null'>
+                                    <template slot-scope="scope">
+                                        {{scope.row.name}}
+                                    </template>
+                                </el-table-column>
+                                 <el-table-column prop="text" label='null'>
+                                    <template slot-scope="scope">
+                                        <p>{{scope.row.text1}}</p>
+                                        <p>{{scope.row.text2}}</p>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                        <div>
+                            <h3
+                                style="width: 100%;text-align: center;background:skyblue;height: 40px;line-height: 40px;">
+                                办理结果</h3>
+                            <el-table :data='tableData2' border>
+                                <el-table-column prop='type' label='类型'></el-table-column>
+                                <el-table-column prop='name' label='名称'></el-table-column>
+                                <el-table-column prop='person' label='班里人'></el-table-column>
+                                <el-table-column prop='date' label="办理时间"></el-table-column>
+                            </el-table>
+                        </div>
+                    </div>
+                    <div class="info—right">
+                        <el-table :data="tableData">
+                            <el-table-column prop="data" label="办件信息" width="180">
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </div>
+                <div class="footer" style="background: #000;text-align: center;margin: 20px 0;padding: 10px 0;">
+                    <el-button type='primary'>审批单信息</el-button>
+                    <el-button type='primary'>流程跟踪</el-button>
+                    <el-button type='primary'>其他</el-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $.ajax({
+        url: "./common/menu.html",
+    }).then(res => {
+        $("#commonMenu").html(res)
+    })
+    var app = new Vue({
+        el: "#doc",
+        data: {
+            tableData: [
+                { data: "[办理状态]办件中" },
+                { data: "[办理状态]办件中" },
+                { data: "[办理状态]办件中" },
+            ],
+            dynamicValidateForm: {
+                company: "太极计算机股份有限公司",
+                type: "企业营业执照",
+                number: "12312312",
+                contacts: "某某",
+                phone: "0280-21313123",
+                tel: "123123123",
+                email: "23112312",
+                address: "海南省海口市亚希大厦"
+            },
+            labelPosition: "right",
+            tableData1: [
+                { index: "1", name: "地政部门出具的地震观测环境影响选址审查", status: "通过" },
+                { index: "2", name: "地政部门出具的地震观测环境影响选址审查", status: "通过" },
+                { index: "3", name: "地政部门出具的地震观测环境影响选址审查", status: "通过" }
+            ],
+            tableData2: [
+                { type: "证照", name: "工商营业执照", person: "熊伟", date: "2014-03-28" }
+            ],
+            tableData3: [
+                { id: "1", name: "申请", text1: "熊伟【太极计算机有限公司】 2014-03-24 14:28:50", text2: "我单位具备申请条件，我单位具备申请条件" },
+                { id: "1", name: "申请", text1: "熊伟【太极计算机有限公司】 2014-03-24 14:28:50", text2: "我单位具备申请条件，我单位具备申请条件" },
+                { id: "2", name: "受理意见", text1: "熊伟【太极计算机有限公司】 2014-03-24 14:28:50", text2: "我单位具备申请条件，我单位具备申请条件" },
+            ],
+            spanArr: [],
+            tableData6: [{
+                id: '1',
+                name: '王小虎',
+                amount1: '234',
+                amount2: '3.2',
+                amount3: 10
+            }, {
+                id: '1',
+                name: '王小虎',
+                amount1: '165',
+                amount2: '4.43',
+                amount3: 12
+            }, {
+                id: '2',
+                name: '王小虎',
+                amount1: '324',
+                amount2: '1.9',
+                amount3: 9
+            }, {
+                id: '2',
+                name: '王小虎',
+                amount1: '621',
+                amount2: '2.2',
+                amount3: 17
+            }, {
+                id: '2',
+                name: '王小虎',
+                amount1: '539',
+                amount2: '4.1',
+                amount3: 15
+            }]
+        },
+        mounted() {
+            this.getSpanArr(this.tableData3)
+        },
+        methods: {
+            getSpanArr(data) {
+                for (var i = 0; i < data.length; i++) {
+                    if (i === 0) {
+                        this.spanArr.push(1);
+                        this.pos = 0
+                    } else {
+                        // 判断当前元素与上一个元素是否相同
+                        if (data[i].id === data[i - 1].id) {
+                            this.spanArr[this.pos] += 1;
+                            this.spanArr.push(0);
+                        } else {
+                            this.spanArr.push(1);
+                            this.pos = i;
+                        }
+                    }
+                }
+            },
+            objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+                if (columnIndex === 0) {
+                    const _row = this.spanArr[rowIndex];
+                    const _col = _row > 0 ? 1 : 0;
+                    return {
+                        rowspan: _row,
+                        colspan: _col
+                    }
+                }
+            }
+        }
+    })
+</script>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/element.css">
+    <!-- 引入组件库 -->
+    <link rel="stylesheet" href="/css/common.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/common/vue.js"></script>
+    <script src="/common/element.js"></script>
+    <title>顺义行政审批平台</title>
+</head>
+<body>
+    <div class="content">
+        <div id="commonMenu"></div>
+        <div id="doc">
+            <div class='substance'>
+                <div class="header" style="overflow: hidden;">
+                    <el-breadcrumb separator-class="el-icon-arrow-right"
+                        style="position: relative;top: 15px;float: left;">
+                        <el-breadcrumb-item>辅助功能</el-breadcrumb-item>
+                        <el-breadcrumb-item>窗口管理</el-breadcrumb-item>
+                    </el-breadcrumb>
+                    <el-row style="float: right;">
+                        <el-input placeholder="在这里输入要搜索的内容" style="width:350px"></el-input>
+                        <el-button type="primary">搜索</el-button>
+                        <el-button type="primary">高级搜索</el-button>
+                        <el-button type="primary">重置</el-button>
+                    </el-row>
+                </div>
+                <div class="table">
+                    <el-row style="margin-top: 15px;margin-bottom: 15px;">
+                        <el-button type='primary'>新增</el-button>
+                        <el-button type='primary'>删除</el-button>
+                        <el-button type='primary'>预约设置</el-button>
+                        <el-button type='primary'>复制事项</el-button>
+                        <el-button type='primary'>同步数据</el-button>
+                    </el-row>
+                    <template>
+                        <el-table :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+                            style="width: 100%;overflow-x: scroll;" border size='small'>
+                            <el-table-column type='selection' width='40'></el-table-column>
+                            <el-table-column prop="index" label="窗口号" sortable></el-table-column>
+                            <el-table-column prop="company" label="部门" sortable></el-table-column>
+                            <el-table-column prop="floor" label="楼层" sortable></el-table-column>
+                            <el-table-column prop="area" label="功能区域" sortable></el-table-column>
+                            <el-table-column prop="quality" label="人员数" sortable></el-table-column>
+                            <el-table-column prop="number" label="接件委托" sortable></el-table-column>
+                            <el-table-column prop="type1" label="受理委托-材料预审" sortable></el-table-column>
+                            <el-table-column prop="type2" label="受理委托-直接受理" sortable></el-table-column>
+                            <el-table-column prop="type3" label="全权委托" sortable></el-table-column>
+                            <el-table-column prop="count" label="涉企服务事项数" sortable></el-table-column>
+                        </el-table>
+                    </template>
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                        :page-sizes="[1, 2, 3, 4]" :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
+                    </el-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $.ajax({
+        url: "../common/menu.html",
+    }).then(res => {
+        $("#commonMenu").html(res)
+    })
+    var app = new Vue({
+        el: "#doc",
+        data() {
+            return {
+                total: "",
+                pageSize: 4,
+                currentPage: "1",
+                tableData: [
+                   {index:"1",company:"1",floor:"1",area:"1",quality:"1",number:"1",type1:"1",type2:"1",type3:"1",count:"1"}
+                ]
+            }
+        },
+        created() {
+            localStorage.setItem("sy_activeIndex", 6)
+            localStorage.setItem("sy_leftColumnActiveIndex", 9)
+            this.total = this.tableData.length;
+        },
+        methods: {
+            handleSizeChange(val) {
+                this.pageSize = val;
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+            }
+        }
+    })
+</script>
+
+</html>

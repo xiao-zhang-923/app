@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/element.css">
+    <!-- 引入组件库 -->
+    <link rel="stylesheet" href="/css/common.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/common/vue.js"></script>
+    <script src="/common/element.js"></script>
+    <title>顺义行政审批平台</title>
+    <style>
+        .el-table__header{
+            border-bottom: 1px solid #ebeef5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div id="commonMenu"></div>
+        <div id="doc">
+            <div class='substance'>
+                <div class="header" style="overflow: hidden;">
+                    <el-breadcrumb separator-class="el-icon-arrow-right"
+                        style="position: relative;top: 15px;float: left;">
+                        <el-breadcrumb-item>查询统计</el-breadcrumb-item>
+                        <el-breadcrumb-item>综合统计</el-breadcrumb-item>
+                        <el-breadcrumb-item>评价统计</el-breadcrumb-item>
+                    </el-breadcrumb>
+                    <el-row style="float: right;">
+                        <el-button type='primary'>隐藏统计配置项</el-button>
+                        <el-button type="primary">统计</el-button>
+                        <el-button type="primary">导出</el-button>
+                    </el-row>
+                </div>
+                <div class="table">
+                    <el-row style="margin-top: 15px;margin-bottom: 15px;">
+                        <el-form ref="statisticsForm" :inline='true' :model="statisticsForm" label-width="80px"
+                            class="demo-form-inline">
+                            <el-form-item label="周期">
+                                <el-radio-group v-model="statisticsForm.cycle">
+                                    <el-radio :label="1">日报</el-radio>
+                                    <el-radio :label="2">月报</el-radio>
+                                    <el-radio :label="3">年报</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                            <el-form-item label="时间范围">
+                                <el-col v-if='statisticsForm.cycle==1'>
+                                    <el-col :span="11">
+                                        <el-form-item prop="date1">
+                                            <el-date-picker type="date" placeholder="选择日期"
+                                                v-model="statisticsForm.date1" style="width: 100%;"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col class="line" :span="2">-</el-col>
+                                    <el-col :span="11">
+                                        <el-form-item prop="date2">
+                                            <el-date-picker type="date" placeholder="选择日期"
+                                                v-model="statisticsForm.date2" style="width: 100%;"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-col>
+                                <el-col v-if='statisticsForm.cycle==2'>
+                                    <el-col :span="11">
+                                        <el-form-item prop="date1">
+                                            <el-date-picker type="month" placeholder="选择日期"
+                                                v-model="statisticsForm.date1" style="width: 100%;"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col class="line" :span="2">-</el-col>
+                                    <el-col :span="11">
+                                        <el-form-item prop="date2">
+                                            <el-date-picker type="month" placeholder="选择日期"
+                                                v-model="statisticsForm.date2" style="width: 100%;"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-col>
+                                <el-col v-if='statisticsForm.cycle==3'>
+                                    <el-col :span="11">
+                                        <el-form-item prop="date1">
+                                            <el-date-picker type="year" placeholder="选择日期"
+                                                v-model="statisticsForm.date1" style="width: 100%;"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col class="line" :span="2">-</el-col>
+                                    <el-col :span="11">
+                                        <el-form-item prop="date2">
+                                            <el-date-picker type="year" placeholder="选择日期"
+                                                v-model="statisticsForm.date2" style="width: 100%;"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-col>
+                            </el-form-item>
+                            <el-form-item label='部门'>
+                                <el-select style="width:400px" v-model="statisticsForm.companyScopeValue"
+                                    placeholder="请选择" :multiple='statisticsForm.multiple' filterable>
+                                    <el-option v-for="item in statisticsForm.companyScope" :key="item.value"
+                                        :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-form>
+                    </el-row>
+                    <template>
+                        <el-table :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+                            style="width: 100%;overflow-x: scroll;" border size='small' show-summary>
+                            <!-- <el-table-column type='selection' width='40'></el-table-column> -->
+                            <el-table-column prop="index" label="序号" ></el-table-column>
+                            <el-table-column prop="company" label="单位"></el-table-column>
+                            <el-table-column prop="number" label="受理"></el-table-column>
+                            <el-table-column prop="quality" label="办结"></el-table-column>
+                            <el-table-column prop="count" label="评价总数"></el-table-column>
+                            <el-table-column prop="level5" label="五星" ></el-table-column>
+                            <el-table-column prop="level4" label="四星"></el-table-column>
+                            <el-table-column prop="level3" label="三星"></el-table-column>
+                            <el-table-column prop="level2" label="二星" ></el-table-column>
+                            <el-table-column prop="level1" label="一星"></el-table-column>
+                        </el-table>
+                    </template>
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                        :page-sizes="[1, 2, 3, 4]" :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
+                    </el-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $.ajax({
+        url: "../../common/menu.html",
+    }).then(res => {
+        $("#commonMenu").html(res)
+    })
+    var app = new Vue({
+        el: "#doc",
+        data() {
+            return {
+                total: "",
+                pageSize: 4,
+                currentPage: "1",
+                tableData: [
+                    { index: "1", company: "1", number: "1", quality: "1", count: "1", level5: "1", level4: "1", level3: "1", level2: "1",level1:"1"}
+                ],
+                statisticsForm: {
+                    company: 1,
+                    cycle: 1,
+                    date1: this.cycle == 3 ? new Date().getFullYear() : this.cycle == 2 ? new Date().getFullYear() + "-" + parseInt(parseInt(new Date().getMonth()) + parseInt(1)) : new Date().getFullYear() + "-" + parseInt(parseInt(new Date().getMonth()) + parseInt(1)) + "-" + new Date().getDate(),
+                    date2: this.cycle == 3 ? new Date().getFullYear() : this.cycle == 2 ? new Date().getFullYear() + "-" + parseInt(parseInt(new Date().getMonth()) + parseInt(1)) : new Date().getFullYear() + "-" + parseInt(parseInt(new Date().getMonth()) + parseInt(1)) + "-" + new Date().getDate(),
+                    companyScope: [
+                        { value: "1", label: "1" },
+                        { value: "2", label: "2" },
+                        { value: "11", label: "11" },
+                    ],
+                    companyScopeValue: "",
+                    multiple: true,
+                    sortable:false
+                }
+            }
+        },
+        created() {
+            localStorage.setItem("sy_activeIndex", 7)
+            localStorage.setItem("sy_leftColumnActiveIndex", 4)
+            this.total = this.tableData.length;
+        },
+        methods: {
+            handleSizeChange(val) {
+                this.pageSize = val;
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+            }
+        }
+    })
+</script>
+
+</html>
