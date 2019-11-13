@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div class="content">
+    <div class="content" id="content">
         <div id="commonMenu"></div>
         <div id="doc">
             <div class='substance'>
@@ -27,9 +27,9 @@
                         <el-breadcrumb-item>已办</el-breadcrumb-item>
                     </el-breadcrumb>
                     <el-row style="float: right;">
-                        <el-input placeholder="在这里输入要搜索的内容" style="width:350px"></el-input>
+                        <el-input placeholder="在这里输入要搜索的内容" style="width:350px" v-model='searchText'></el-input>
                         <el-button type="primary">搜索</el-button>
-                        <el-button type="primary">高级搜索</el-button>
+                        <el-button type="primary" @click="searchFormFlag = true">高级搜索</el-button>
                         <!-- <el-button type="primary">刷新</el-button> -->
                     </el-row>
                 </div>
@@ -60,6 +60,56 @@
                 </div>
             </div>
         </div>
+        <el-dialog modal title='高级搜索' :visible.sync="searchFormFlag" width='480px' center custom-class='searchForm'
+            top='0' :before-close='closeSearchForm'>
+            <el-form :label-position='"right"' ref='searchForm' :model='searchForm' label-width="120px" size='mini'>
+                <el-form-item label='当前环节:'>
+                    <el-input v-model='searchForm.link' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='当前环节:'>
+                    <el-input v-model='searchForm.status' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='项目编号:'>
+                    <el-input v-model='searchForm.number' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='项目名称:'>
+                    <el-input v-model='searchForm.name' style="width:280px"></el-input>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='联系人:'>
+                    <el-input v-model='searchForm.people' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='移动电话:'>
+                    <el-input v-model='searchForm.phone' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='牵头部门:'>
+                    <el-input v-model='searchForm.company' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='申请时间:'>
+                    <el-date-picker v-model="searchForm.date" type="daterange" range-separator="至"
+                        start-placeholder="开始日期" end-placeholder="结束日期" value-format='yyyy-MM-ddx'
+                        style="width: 280px;">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label='申请时间:'>
+                    <el-date-picker v-model="searchForm.date1" type="daterange" range-separator="至"
+                        start-placeholder="开始日期" end-placeholder="结束日期" value-format='yyyy-MM-ddx'
+                        style="width: 280px;">
+                    </el-date-picker>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer" center>
+                <el-button type='primary' @click='searchFormReset'>重置</el-button>
+                <el-button type='primary'>搜索</el-button>
+                <el-button type="primary" @click='closeSearchForm'>返回</el-button>
+            </div>
+        </el-dialog>
     </div>
 </body>
 <script>
@@ -69,15 +119,20 @@
         $("#commonMenu").html(res)
     })
     var app = new Vue({
-        el: "#doc",
+        el: "#content",
         data() {
             return {
                 total: "",
                 pageSize: 4,
                 currentPage: "1",
                 tableData: [
-                    {link:"1",status:"1", index: "1",name: "1", people: "1",phone:"1",department:"1",time:"1",overTime:"1"}
-                ]
+                    { link: "1", status: "1", index: "1", name: "1", people: "1", phone: "1", department: "1", time: "1", overTime: "1" }
+                ],
+                searchFormFlag: false,
+                searchText: "",
+                searchForm: {
+                    number: "", name: "", company: "", date: "", people: "", phone: "", link: "", status: "", date1: ""
+                }
             }
         },
         created() {
@@ -91,7 +146,18 @@
             },
             handleCurrentChange(val) {
                 this.currentPage = val;
-            }
+            },
+            closeSearchForm() {
+                this.searchFormFlag = false,
+                    this.searchForm = {
+                        number: "", name: "", company: "", date: "", people: "", phone: "", link: "", status: "", date1: ""
+                    }
+            },
+            searchFormReset() {
+                this.searchForm = {
+                    number: "", name: "", company: "", date: "", people: "", phone: "", link: "", status: "", date1: ""
+                }
+            },
         }
     })
 </script>

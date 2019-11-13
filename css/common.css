@@ -5,9 +5,9 @@ body{
     font-family: "微软雅黑", "宋体";
 }
 a{display: block;color: #000;text-decoration: none;}
-::-webkit-scrollbar{
+/* ::-webkit-scrollbar{
     display: none;
-}
+} */
 .top{
     background: #4795d3;
     height: 45px;
