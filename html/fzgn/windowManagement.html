@@ -69,39 +69,25 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item label='部门:'>
-                    <el-input v-model='searchForm.child' style="width:280px"></el-input>
+                    <el-input v-model='searchForm.company' style="width:280px"></el-input>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='人员:'>
+                    <el-input v-model='searchForm.person' style="width:280px"></el-input>
                     </el-input>
                 </el-form-item>
                 <el-form-item label='楼层:'>
-                    <el-input v-model='searchForm.type' style="width:280px">
-                    </el-input>
+                    <el-select v-model='searchForm.floor' style="width:280px">
+                        <el-option v-for='item in floorGroup' :label='item.label' :value='item.value'></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label='功能区域:'>
-                    <el-input v-model='searchForm.content' style="width:280px">
-                    </el-input>
+                    <el-select v-model='searchForm.function' style="width:280px">
+                        <el-option v-for='item in functionGroup' :label='item.label' :value='item.value'></el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label='人员数:'>
-                    <el-input v-model='searchForm.day' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='接件委托:'>
-                    <el-input v-model='searchForm.type1' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='受理委托-材料预审:'>
-                    <el-input v-model='searchForm.type2' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='受理委托-直接受理:'>
-                    <el-input v-model='searchForm.type3' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='全权委托:'>
-                    <el-input v-model='searchForm.type4' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='涉企服务事项数:'>
-                    <el-input v-model='searchForm.type5' style="width:280px">
+                <el-form-item label='联系电话:'>
+                    <el-input v-model='searchForm.phone' style="width:280px"></el-input>
                     </el-input>
                 </el-form-item>
             </el-form>
@@ -129,10 +115,24 @@
                 tableData: [
                     { index: "1", company: "1", floor: "1", area: "1", quality: "1", number: "1", type1: "1", type2: "1", type3: "1", count: "1" }
                 ],
+                floorGroup: [
+                    { label: "请选择", value: "0" },
+                    { label: "一层", value: "1" },
+                    { label: "二层", value: "2" },
+                    { label: "三层", value: "3" },
+                    { label: "四层", value: "4" },
+                    { label: "五层", value: "5" },
+                ],
+                functionGroup: [
+                    { label: "请选择", value: "0" },
+                    { label: "城市运行专区", value: "1" },
+                    { label: "企业服务专区", value: "2" },
+                    { label: "社会事务专区", value: "3" },
+                ],
                 searchFormFlag: false,
                 searchText: "",
                 searchForm: {
-                    number: "", child: "", type: "", day: "", content: "",type1:"",type2:"",type3:"",type4:"",type5:""
+                    number: "", company: "", person: "", floor: "", function: "", phone: ""
                 },
             }
         },
@@ -154,12 +154,12 @@
             closeSearchForm() {
                 this.searchFormFlag = false,
                     this.searchForm = {
-                        number: "", child: "", type: "", day: "", content: "",type1:"",type2:"",type3:"",type4:"",type5:""
+                        number: "", company: "", person: "", floor: "", function: "", phone: ""
                     }
             },
             searchFormReset() {
                 this.searchForm = {
-                    number: "", child: "", type: "", day: "", content: "",type1:"",type2:"",type3:"",type4:"",type5:""
+                    number: "", company: "", person: "", floor: "", function: "", phone: ""
                 }
             },
         }

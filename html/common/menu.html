@@ -10,7 +10,8 @@
         .personSetting .el-table__body {
             border-top: 1px solid #EBEEF5;
         }
-        .personSetting .el-form-item__content{
+
+        .personSetting .el-form-item__content {
             line-height: inherit;
         }
     </style>
@@ -18,7 +19,7 @@
 
 <body>
     <div id="app">
-        <div id="header">
+        <div id="header" class="header_">
             <div class="top">
                 <div class="fun_btn">
                     <span><i class="el-icon-user"></i>您好，维护管理员(顺义区服务中心)</span>
@@ -575,8 +576,8 @@
             onSubmit() {
 
             },
-            closeSetting(){
-                this.settingFlag= false;
+            closeSetting() {
+                this.settingFlag = false;
             }
         }
     })

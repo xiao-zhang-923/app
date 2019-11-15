@@ -76,10 +76,6 @@
                     <el-input v-model='searchForm.phone' style="width:280px">
                     </el-input>
                 </el-form-item>
-                <el-form-item label='牵头部门:'>
-                    <el-input v-model='searchForm.company' style="width:280px">
-                    </el-input>
-                </el-form-item>
                 <el-form-item label='创建时间:'>
                     <el-date-picker v-model="searchForm.date" type="daterange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format='yyyy-MM-ddx'
@@ -114,7 +110,7 @@
                 searchFormFlag: false,
                 searchText: "",
                 searchForm: {
-                    number:"",name: "", company: "", date: "",people:"",phone:""
+                    number:"",name: "", date: "",people:"",phone:""
                 }
             }
         },
@@ -133,12 +129,12 @@
             closeSearchForm() {
                 this.searchFormFlag = false,
                     this.searchForm = {
-                        number:"",name: "", company: "", date: "",people:"",phone:""
+                        number:"",name: "", date: "",people:"",phone:""
                     }
             },
             searchFormReset() {
                 this.searchForm = {
-                    number:"",name: "", company: "", date: "",people:"",phone:""
+                    number:"",name: "",  date: "",people:"",phone:""
                 }
             },
         }

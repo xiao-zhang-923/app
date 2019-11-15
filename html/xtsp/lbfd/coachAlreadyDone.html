@@ -63,14 +63,6 @@
         <el-dialog modal title='高级搜索' :visible.sync="searchFormFlag" width='480px' center custom-class='searchForm'
             top='0' :before-close='closeSearchForm'>
             <el-form :label-position='"right"' ref='searchForm' :model='searchForm' label-width="120px" size='mini'>
-                <el-form-item label='当前环节:'>
-                    <el-input v-model='searchForm.link' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='当前环节:'>
-                    <el-input v-model='searchForm.status' style="width:280px">
-                    </el-input>
-                </el-form-item>
                 <el-form-item label='项目编号:'>
                     <el-input v-model='searchForm.number' style="width:280px">
                     </el-input>
@@ -83,22 +75,12 @@
                     <el-input v-model='searchForm.people' style="width:280px">
                     </el-input>
                 </el-form-item>
-                <el-form-item label='移动电话:'>
+                <el-form-item label='联系人电话:'>
                     <el-input v-model='searchForm.phone' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='牵头部门:'>
-                    <el-input v-model='searchForm.company' style="width:280px">
                     </el-input>
                 </el-form-item>
                 <el-form-item label='申请时间:'>
                     <el-date-picker v-model="searchForm.date" type="daterange" range-separator="至"
-                        start-placeholder="开始日期" end-placeholder="结束日期" value-format='yyyy-MM-ddx'
-                        style="width: 280px;">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label='申请时间:'>
-                    <el-date-picker v-model="searchForm.date1" type="daterange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format='yyyy-MM-ddx'
                         style="width: 280px;">
                     </el-date-picker>
@@ -131,7 +113,7 @@
                 searchFormFlag: false,
                 searchText: "",
                 searchForm: {
-                    number: "", name: "", company: "", date: "", people: "", phone: "", link: "", status: "", date1: ""
+                    number: "", name: "", date: "", people: "", phone: "",
                 }
             }
         },
@@ -150,12 +132,12 @@
             closeSearchForm() {
                 this.searchFormFlag = false,
                     this.searchForm = {
-                        number: "", name: "", company: "", date: "", people: "", phone: "", link: "", status: "", date1: ""
+                        number: "", name: "", date: "", people: "", phone: "",
                     }
             },
             searchFormReset() {
                 this.searchForm = {
-                    number: "", name: "", company: "", date: "", people: "", phone: "", link: "", status: "", date1: ""
+                    number: "", name: "", date: "", people: "", phone: "",
                 }
             },
         }

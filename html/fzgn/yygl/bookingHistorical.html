@@ -121,20 +121,24 @@
                     <el-input v-model='searchForm.number' style="width:280px">
                     </el-input>
                 </el-form-item>
-                <el-form-item label='来源:'>
-                    <el-input v-model='searchForm.name' style="width:280px"></el-input>
-                    </el-input>
-                </el-form-item>
                 <el-form-item label='预约人:'>
-                    <el-input v-model='searchForm.company' style="width:280px">
+                    <el-input v-model='searchForm.people' style="width:280px">
                     </el-input>
                 </el-form-item>
                 <el-form-item label='行使层级:'>
-                    <el-input v-model='searchForm.type' style="width:280px">
+                    <el-input v-model='searchForm.level' style="width:280px">
                     </el-input>
                 </el-form-item>
                 <el-form-item label='单位名称:'>
-                    <el-input v-model='searchForm.days' style="width:280px">
+                    <el-input v-model='searchForm.company' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='证件号码:'>
+                    <el-input v-model='searchForm.id' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='手机号:'>
+                    <el-input v-model='searchForm.phone' style="width:280px">
                     </el-input>
                 </el-form-item>
                 <el-form-item label='预约日期:'>
@@ -142,18 +146,6 @@
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format='yyyy-MM-ddx'
                         style="width: 280px;">
                     </el-date-picker>
-                </el-form-item>
-                <el-form-item label='事项:'>
-                    <el-input v-model='searchForm.version' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='电话号码:'>
-                    <el-input v-model='searchForm.phone' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='爽约次数:'>
-                    <el-input v-model='searchForm.breakTimes' style="width:280px">
-                    </el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer" center>
@@ -183,7 +175,7 @@
                 searchFormFlag: false,
                 searchText: "",
                 searchForm: {
-                    number: "", type: "", name: "", company: "", date: "", days: "", version: "", phone: "", breakTimes: ""
+                    number: "", people:"",level:"",company:"",id:"",phone:"",date:""
                 },
                 activeName: "first"
             }
@@ -208,12 +200,12 @@
             closeSearchForm() {
                 this.searchFormFlag = false,
                     this.searchForm = {
-                        number: "", type: "", name: "", company: "", date: "", days: "", version: "", phone: "", breakTimes: ""
+                        number: "", people:"",level:"",company:"",id:"",phone:"",date:""
                     }
             },
             searchFormReset() {
                 this.searchForm = {
-                    number: "", type: "", name: "", company: "", date: "", days: "", version: "", phone: "", breakTimes: ""
+                    number: "", people:"",level:"",company:"",id:"",phone:"",date:""
                 }
             },
         }

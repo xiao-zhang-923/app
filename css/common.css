@@ -5,11 +5,8 @@ body{
     font-family: "微软雅黑", "宋体";
 }
 a{display: block;color: #000;text-decoration: none;}
-/* ::-webkit-scrollbar{
-    display: none;
-} */
 .top{
-    background: #4795d3;
+    background: #4795d3 url('/image/logo_zhck.png') no-repeat scroll left top;
     height: 45px;
     overflow: hidden;
 }
@@ -40,10 +37,11 @@ a{display: block;color: #000;text-decoration: none;}
 .el-menu-demo{
     border: 0!important;
 }
+
 #header .el-menu-demo , #header .el-menu--horizontal>.el-menu-item{
-    background: #166fb9!important;
-    height: 40px;
-    line-height: 40px;
+   background: #166fb9 !important; 
+   height: 100%;
+   line-height: 40px;
 }
 #header .el-menu--horizontal>.el-menu-item.is-active{
     background: rgb(14, 68, 113) no-repeat!important;

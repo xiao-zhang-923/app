@@ -65,38 +65,85 @@
                 </div>
             </div>
         </div>
-        <el-dialog modal title='高级搜索' :visible.sync="searchFormFlag" width='480px' center custom-class='searchForm'
-            top='0' :before-close='closeSearchForm'>
-            <el-form :label-position='"right"' ref='searchForm' :model='searchForm' label-width="120px" size='mini'>
-                <el-form-item label='事项编号:'>
-                    <el-input v-model='searchForm.number' style="width:280px">
-                    </el-input>
-                </el-form-item>
+        <el-dialog modal title='高级搜索' :visible.sync="searchFormFlag" width='650px' center
+            :before-close='closeSearchForm'>
+            <el-form :label-position='"right"' ref='searchForm' :model='searchForm' label-width="100px" size='mini'
+                :inline='true'>
+                <el-row>
+                    <el-col :span='12'>
+                        <el-form-item label='事项编号:'>
+                            <el-input v-model='searchForm.number'>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span='12'>
+                        <el-form-item label='单位:'>
+                            <el-input v-model='searchForm.company'>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
                 <el-form-item label='事项名称:'>
-                    <el-input v-model='searchForm.name' style="width:280px"></el-input>
+                    <el-input v-model='searchForm.name' style="width: 475px;"></el-input>
                     </el-input>
                 </el-form-item>
-                <el-form-item label='单位:'>
-                    <el-input v-model='searchForm.company' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='办件类型:'>
-                    <el-input v-model='searchForm.type' style="width:280px">
-                    </el-input>
-                </el-form-item>
+                <el-row>
+                    <el-col :span='12'>
+                        <el-form-item label='办件类型:'>
+                            <el-select style="width: 185px;" v-model='searchForm.officeType'>
+                                <el-option v-for='item in officeTypeGroup' :label='item.label' :value='item.value'>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span='12'>
+                        <el-form-item label='事项类型:'>
+                            <el-select style="width: 185px;" v-model='searchForm.matterType'>
+                                <el-option v-for='item in matterTypeGroup' :label='item.label' :value='item.value'>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span='12'>
+                        <el-form-item label='是否收费:' >
+                            <el-select style="width: 185px;" v-model='searchForm.isCharge'>
+                                <el-option v-for='item in chargeGroup' :label='item.label' :value='item.value'>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span='12'>
+                        <el-form-item label='是否进驻中心:'>
+                            <el-select style="width: 185px;" v-model='searchForm.isCore'>
+                                <el-option v-for='item in coreGroup' :label='item.label' :value='item.value'>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
                 <el-form-item label='承诺期限:'>
-                    <el-input v-model='searchForm.days' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='版本号:'>
-                    <el-input v-model='searchForm.version' style="width:280px">
+                    <el-input v-model='searchForm.days' style="width: 475px;"></el-input>
                     </el-input>
                 </el-form-item>
                 <el-form-item label='修改时间:'>
                     <el-date-picker v-model="searchForm.date" type="daterange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format='yyyy-MM-ddx'
-                        style="width: 280px;">
+                        style="width: 475px;">
                     </el-date-picker>
+                </el-form-item>
+                <el-form-item label='是否网上公示:'>
+                    <el-select style="width: 475px;" v-model='searchForm.isPublicity'>
+                        <el-option v-for='item in publicityGroup' :label='item.label' :value='item.value'>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label='是否结果公示:'>
+                    <el-select style="width: 475px;" v-model='searchForm.isResult'>
+                        <el-option v-for='item in resultGroup' :label='item.label' :value='item.value'>
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer" center>
@@ -123,10 +170,49 @@
                 tableData: [
                     { number: "1", company: "1", name: "1", type: "1", time: "1", version: "1", date: "1" }
                 ],
+                officeTypeGroup: [
+                    { label: '请选择', value: "0" },
+                    { label: '即办件', value: "1" },
+                    { label: '承诺件', value: "2" },
+                    { label: '上报件', value: "3" },
+                ],
+                matterTypeGroup: [
+                    { label: '行政许可事项', value: "0" },
+                    { label: '政府内部审批事项', value: "1" },
+                    { label: '行政检查事项', value: "2" },
+                    { label: '其他职权', value: "3" },
+                    { label: '行政裁决事项', value: "4" },
+                    { label: '行政处罚事项', value: "5" },
+                    { label: '行政征收事项', value: "6" },
+                    { label: '行政给付事项', value: "7" },
+                    { label: '行政确认事项', value: "8" },
+                    { label: '行政奖励事项', value: "9" },
+                    { label: '行政强制事项', value: "10" },
+                ],
+                chargeGroup: [
+                    { label: '请选择', value: "0" },
+                    { label: '是', value: "1" },
+                    { label: '否', value: "2" },
+                ],
+                coreGroup: [
+                    { label: '请选择', value: "0" },
+                    { label: '是', value: "1" },
+                    { label: '否', value: "2" },
+                ],
+                publicityGroup: [
+                    { label: '请选择', value: "0" },
+                    { label: '是', value: "1" },
+                    { label: '否', value: "2" },
+                ],
+                resultGroup: [
+                    { label: '请选择', value: "0" },
+                    { label: '是', value: "1" },
+                    { label: '否', value: "2" },
+                ],
                 searchFormFlag: false,
                 searchText: "",
                 searchForm: {
-                    number: "", type: "", name: "", company: "", date: "", days: "", version: ""
+                    number: "", company: "", name: "", officeType:"", matterType: "", isCharge: "", isCore: "", days: "", date: "", isPublicity: "", isResult: "",
                 },
             }
         },
@@ -148,12 +234,12 @@
             closeSearchForm() {
                 this.searchFormFlag = false,
                     this.searchForm = {
-                        number: "", type: "", name: "", company: "", date: "", days: "", version: ""
+                        number: "", company: "", name: "", officeType:"", matterType: "", isCharge: "", isCore: "", days: "", date: "", isPublicity: "", isResult: "",
                     }
             },
             searchFormReset() {
                 this.searchForm = {
-                    number: "", type: "", name: "", company: "", date: "", days: "", version: ""
+                    number: "", company: "", name: "", officeType:"", matterType: "", isCharge: "", isCore: "", days: "", date: "", isPublicity: "", isResult: "",
                 }
             },
             exportExcel() {

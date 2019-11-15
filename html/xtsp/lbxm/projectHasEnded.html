@@ -58,10 +58,6 @@
         <el-dialog modal title='高级搜索' :visible.sync="searchFormFlag" width='480px' center custom-class='searchForm'
             top='0' :before-close='closeSearchForm'>
             <el-form :label-position='"right"' ref='searchForm' :model='searchForm' label-width="120px" size='mini'>
-                <el-form-item label='序号:'>
-                    <el-input v-model='searchForm.id' style="width:280px">
-                    </el-input>
-                </el-form-item>
                 <el-form-item label='联办编号:'>
                     <el-input v-model='searchForm.number' style="width:280px">
                     </el-input>
@@ -108,7 +104,7 @@
                 searchFormFlag: false,
                 searchText: "",
                 searchForm: {
-                    id: "", number: "", name: "", people: "",  date: ""
+                    number: "", name: "", people: "",  date: "",
                 }
             }
         },
@@ -127,12 +123,12 @@
             closeSearchForm() {
                 this.searchFormFlag = false,
                     this.searchForm = {
-                        id: "", number: "", name: "", people: "",  date: ""
+                        number: "", name: "", people: "",  date: ""
                     }
             },
             searchFormReset() {
                 this.searchForm = {
-                    id: "", number: "", name: "", people: "",  date: ""
+                     number: "", name: "", people: "",  date: ""
                 }
             },
         }

@@ -65,10 +65,6 @@
                     <el-input v-model='searchForm.number' style="width:280px">
                     </el-input>
                 </el-form-item>
-                <el-form-item label='当前环节:'>
-                    <el-input v-model='searchForm.link' style="width:280px">
-                    </el-input>
-                </el-form-item>
                 <el-form-item label='项目名称:'>
                     <el-input v-model='searchForm.name' style="width:280px"></el-input>
                     </el-input>
@@ -77,12 +73,8 @@
                     <el-input v-model='searchForm.people' style="width:280px">
                     </el-input>
                 </el-form-item>
-                <el-form-item label='移动电话:'>
+                <el-form-item label='联系电话:'>
                     <el-input v-model='searchForm.phone' style="width:280px">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label='牵头部门:'>
-                    <el-input v-model='searchForm.company' style="width:280px">
                     </el-input>
                 </el-form-item>
                 <el-form-item label='申请时间:'>
@@ -119,7 +111,7 @@
                 searchFormFlag: false,
                 searchText: "",
                 searchForm: {
-                    number:"",name: "", company: "", date: "",people:"",phone:"",link:""
+                    number:"",name: "",  date: "",people:"",phone:""
                 }
             }
         },
@@ -138,12 +130,12 @@
             closeSearchForm() {
                 this.searchFormFlag = false,
                     this.searchForm = {
-                        number:"",name: "", company: "", date: "",people:"",phone:"",link:""
+                        number:"",name: "",  date: "",people:"",phone:""
                     }
             },
             searchFormReset() {
                 this.searchForm = {
-                    number:"",name: "", company: "", date: "",people:"",phone:"",link:""
+                    number:"",name: "",  date: "",people:"",phone:""
                 }
             },
         }
