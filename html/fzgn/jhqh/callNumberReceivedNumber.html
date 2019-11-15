@@ -13,8 +13,9 @@
     <script src="/common/element.js"></script>
     <title>顺义行政审批平台</title>
 </head>
+
 <body>
-    <div class="content">
+    <div class="content" id="content">
         <div id="commonMenu"></div>
         <div id="doc">
             <div class='substance'>
@@ -26,19 +27,19 @@
                         <el-breadcrumb-item>已取号</el-breadcrumb-item>
                     </el-breadcrumb>
                     <el-row style="float: right;">
-                        <el-input placeholder="在这里输入要搜索的内容" style="width:350px"></el-input>
+                        <el-input placeholder="在这里输入要搜索的内容" style="width:350px" v-model='searchText'></el-input>
                         <el-button type="primary">搜索</el-button>
-                        <el-button type="primary">高级搜索</el-button>
-                        <el-button type="primary">重置</el-button>
+                        <el-button type="primary" @click='searchFormFlag=true'>高级搜索</el-button>
+                        <el-button type="primary" @click='reset'>重置</el-button>
                     </el-row>
                 </div>
                 <div class="table">
                     <el-row style="margin-top: 15px;margin-bottom: 15px;">
-                      
+
                     </el-row>
                     <template>
                         <el-table :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
-                            style="width: 100%;overflow-x: scroll;" border size='small'>
+                            style="width: 100%;" border size='small'>
                             <!-- <el-table-column type='selection' width='40'></el-table-column> -->
                             <el-table-column prop="index" label="排队号" sortable></el-table-column>
                             <el-table-column prop="people" label="办理人" sortable></el-table-column>
@@ -56,6 +57,46 @@
                 </div>
             </div>
         </div>
+        <el-dialog modal title='高级搜索' :visible.sync="searchFormFlag" width='480px' center custom-class='searchForm'
+            top='0' :before-close='closeSearchForm'>
+            <el-form :label-position='"right"' ref='searchForm' :model='searchForm' label-width="120px" size='mini'>
+                <el-form-item label='排队号:'>
+                    <el-input v-model='searchForm.number' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='办理人:'>
+                    <el-input v-model='searchForm.child' style="width:280px"></el-input>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='办理人类型:'>
+                    <el-input v-model='searchForm.type' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='事项名称:'>
+                    <el-input v-model='searchForm.content' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='取号时间:'>
+                    <el-date-picker v-model="searchForm.date" type="daterange" range-separator="至"
+                        start-placeholder="开始日期" end-placeholder="结束日期" value-format='yyyy-MM-ddx'
+                        style="width: 280px;">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label='办理部门:'>
+                    <el-input v-model='searchForm.type2' style="width:280px">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label='办理窗口:'>
+                    <el-input v-model='searchForm.type1' style="width:280px">
+                    </el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer" center>
+                <el-button type='primary' @click='searchFormReset'>重置</el-button>
+                <el-button type='primary'>搜索</el-button>
+                <el-button type="primary" @click='closeSearchForm'>返回</el-button>
+            </div>
+        </el-dialog>
     </div>
 </body>
 <script>
@@ -65,15 +106,20 @@
         $("#commonMenu").html(res)
     })
     var app = new Vue({
-        el: "#doc",
+        el: "#content",
         data() {
             return {
                 total: "",
                 pageSize: 4,
                 currentPage: "1",
                 tableData: [
-                   {index:"1",people:"1",type:"1",name:"1",time:"1",company:"1",id:"1"}
-                ]
+                    { index: "1", people: "1", type: "1", name: "1", time: "1", company: "1", id: "1" }
+                ],
+                searchFormFlag: false,
+                searchText: "",
+                searchForm: {
+                    number: "", child: "", type: "",  content: "", type1: "", type2: "", date: ""
+                },
             }
         },
         created() {
@@ -87,6 +133,20 @@
             },
             handleCurrentChange(val) {
                 this.currentPage = val;
+            },
+            closeSearchForm() {
+                this.searchFormFlag = false,
+                    this.searchForm = {
+                        number: "", child: "", type: "", content: "", type1: "", type2: "", date: ""
+                    }
+            },
+            searchFormReset() {
+                this.searchForm = {
+                    number: "", child: "", type: "", content: "", type1: "", type2: "", date: ""
+                }
+            },
+            reset() {
+                this.searchText = ''
             }
         }
     })

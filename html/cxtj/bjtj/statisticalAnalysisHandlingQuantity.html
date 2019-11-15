@@ -11,6 +11,8 @@
     <script src="/js/jquery.js"></script>
     <script src="/common/vue.js"></script>
     <script src="/common/element.js"></script>
+    <script src="/common/tableExport.jquery.plugin-master/jquery.base64.js"></script>
+    <script src="/common/tableExport.jquery.plugin-master/tableExport.js"></script>
     <title>顺义行政审批平台</title>
     <style>
         .el-table .cell,
@@ -39,10 +41,12 @@
                         <el-breadcrumb-item>办件量统计</el-breadcrumb-item>
                     </el-breadcrumb>
                     <el-row style="float: right;">
-                        <el-button type='primary' v-if='settingFlag' @click='settingClick(settingFlag)'>隐藏统计配置项</el-button>
-                        <el-button type='primary' v-if='!settingFlag' @click='settingClick(settingFlag)'>显示统计配置项</el-button>
+                        <el-button type='primary' v-if='settingFlag' @click='settingClick(settingFlag)'>隐藏统计配置项
+                        </el-button>
+                        <el-button type='primary' v-if='!settingFlag' @click='settingClick(settingFlag)'>显示统计配置项
+                        </el-button>
                         <el-button type="primary">统计</el-button>
-                        <el-button type="primary">导出</el-button>
+                        <el-button type="primary" @click='exportExcel("table")'>导出</el-button>
                     </el-row>
                 </div>
                 <div class="table">
@@ -128,7 +132,7 @@
                     </div>
                     <template>
                         <el-table :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
-                            style="width: 100%;overflow-x: scroll;text-align: center;" border size='small' show-summary>
+                            style="width: 100%;" border size='small' show-summary id="table">
                             <!-- <el-table-column type='selection' width='40'></el-table-column> -->
                             <el-table-column prop="name" label="名称"></el-table-column>
                             <el-table-column prop="status1" label="受理数"></el-table-column>
@@ -209,11 +213,11 @@
                         { value: "2", label: "001" },
                         { value: "a", label: "003" },
                     ],
-                    companyScopeValue: ["1"] ,
+                    companyScopeValue: ["1"],
                     multiple: true
                 },
-                settingFlag:true,
-                statisticsFormHeight:null
+                settingFlag: true,
+                statisticsFormHeight: null
             }
         },
         created() {
@@ -221,7 +225,7 @@
             localStorage.setItem("sy_leftColumnActiveIndex", 1)
             this.total = this.tableData.length;
         },
-        mounted(){
+        mounted() {
             this.statisticsFormHeight = $(".statisticsForm").height()
         },
         methods: {
@@ -231,14 +235,17 @@
             handleCurrentChange(val) {
                 this.currentPage = val;
             },
-            settingClick(e){
+            settingClick(e) {
                 this.settingFlag = !e;
-                if(this.settingFlag){
-                    $(".statisticsForm").css({"height":this.statisticsFormHeight,"transition":"height 1s","overflow":"hidden"})
-                }else{
-                    $(".statisticsForm").css({"height":0,"transition":"height 1s","overflow":"hidden"})
+                if (this.settingFlag) {
+                    $(".statisticsForm").css({ "height": this.statisticsFormHeight, "transition": "height 1s", "overflow": "hidden" })
+                } else {
+                    $(".statisticsForm").css({ "height": 0, "transition": "height 1s", "overflow": "hidden" })
                 }
-            }
+            },
+            exportExcel(tableID) {
+                $('#table').tableExport({ type: 'excel', escape: 'false'});
+            },
         }
     })
 </script>

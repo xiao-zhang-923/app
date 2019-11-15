@@ -34,7 +34,8 @@ THE SOFTWARE.*/
 				pdfLeftMargin: 20,
 				escape: 'true',
 				htmlContent: 'false',
-				consoleLog: 'false'
+				consoleLog: 'false',
+				merge:'false'
 			};
 
 			var options = $.extend(defaults, options);
@@ -216,17 +217,25 @@ THE SOFTWARE.*/
 			} else if (defaults.type == 'excel' || defaults.type == 'doc' || defaults.type == 'powerpoint') {
 				var excel = "<table>";
 				// Header
-				$(el).find('thead').find('tr').each(function () {
-					excel += "<tr>";
-					$(this).filter(':visible').find('th').each(function (index, data) {
-						if ($(this).css('display') != 'none') {
-							if (defaults.ignoreColumn.indexOf(index) == -1) {
-								excel += "<td>" + parseString($(this)) + "</td>";
-							}
-						}
-					});
-					excel += '</tr>';
-				});
+				// if(!defaults.merge){
+				// 	$(el).find('thead').find('tr').each(function () {
+				// 		excel += "<tr>";
+				// 		$(this).filter(':visible').find('th').each(function (index, data) {
+				// 			if ($(this).css('display') != 'none') {
+				// 				if (defaults.ignoreColumn.indexOf(index) == -1) {
+				// 					excel += "<td>" + parseString($(this)) + "</td>";
+				// 				}
+				// 			}
+				// 		});
+				// 		excel += '</tr>';
+				// 	});
+				// }else{
+				// 	var thead=$(el).find("thead").html();
+				// 	excel += thead;
+				// }
+				var thead=$(el).find("thead").html();
+				excel += thead;
+			
 
 
 				// Row Vs Column
